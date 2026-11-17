@@ -1,0 +1,28 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>1.0.0</Version>
+    <Product>Maryland Child Support Calculator</Product>
+    <Copyright>Maryland Legal Aid and contributors</Copyright>
+  </PropertyGroup>
+
+  <!--
+    Branding (branding/README.md). Order of preference:
+      1. -p:BrandDir=<folder>          e.g. a folder a release pipeline fetched from a private location
+      2. branding/local/               git-ignored; the official build's brand files
+      3. branding/default/             neutral placeholders committed to the repository
+  -->
+  <PropertyGroup>
+    <BrandDir Condition="'$(BrandDir)' == '' and Exists('$(MSBuildThisFileDirectory)branding/local/brand.props')">$(MSBuildThisFileDirectory)branding/local/</BrandDir>
+    <BrandDir Condition="'$(BrandDir)' == ''">$(MSBuildThisFileDirectory)branding/default/</BrandDir>
+    <BrandDir>$([MSBuild]::EnsureTrailingSlash('$([System.IO.Path]::GetFullPath('$(BrandDir)'))'))</BrandDir>
+    <PlaceholderBrandDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)branding/default/'))</PlaceholderBrandDir>
+    <UsingPlaceholderBrand Condition="'$(BrandDir)' == '$(PlaceholderBrandDir)'">true</UsingPlaceholderBrand>
+  </PropertyGroup>
+  <Import Project="$(BrandDir)brand.props" />
+  <PropertyGroup>
+    <Company>$(BrandCompany)</Company>
+  </PropertyGroup>
+</Project>

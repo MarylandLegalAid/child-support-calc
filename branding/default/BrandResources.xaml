@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Placeholder brand: neutral slate with a teal call to action. Replace by supplying your own brand folder.
+  Every brand folder provides this file with the same keys (branding/README.md). Themes/Brand.xaml builds the app's
+  brushes from these colours; its HighContrast dictionary still maps everything to system colours.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Accessible name of the title-bar logo (BrandLogo.png). -->
+    <x:String x:Key="BrandLogoName">Organization logo</x:String>
+
+    <!-- Title bar, results header, headings and icons. -->
+    <Color x:Key="BrandPrimaryColor">#2B3440</Color>
+    <!-- Caption button hover/pressed background. -->
+    <Color x:Key="BrandPrimaryMidColor">#3A4654</Color>
+    <!-- Text on the primary colour, and a quieter variant (also inactive caption glyphs). -->
+    <Color x:Key="BrandOnPrimaryColor">#FFFFFF</Color>
+    <Color x:Key="BrandOnPrimarySubtleColor">#D5DCE3</Color>
+    <!-- Thin divider in the title bar. -->
+    <Color x:Key="BrandDividerColor">#8794A1</Color>
+    <!-- Secondary text (hints, column captions). -->
+    <Color x:Key="BrandSecondaryTextColor">#4A5563</Color>
+    <!-- Primary call to action (the "Export worksheet PDF" button). -->
+    <Color x:Key="BrandCtaColor">#1F7A8C</Color>
+    <Color x:Key="BrandCtaHoverColor">#2690A5</Color>
+    <Color x:Key="BrandCtaPressedColor">#19616F</Color>
+    <Color x:Key="BrandCtaForegroundColor">#FFFFFF</Color>
+
+    <!-- Windows accent (radio buttons, checkboxes, focus, dialog primary buttons). -->
+    <Color x:Key="SystemAccentColor">#1F7A8C</Color>
+    <Color x:Key="SystemAccentColorLight1">#4FA3B3</Color>
+    <Color x:Key="SystemAccentColorLight2">#8CC5D0</Color>
+    <Color x:Key="SystemAccentColorLight3">#C7E4EA</Color>
+    <Color x:Key="SystemAccentColorDark1">#19616F</Color>
+    <Color x:Key="SystemAccentColorDark2">#134B56</Color>
+    <Color x:Key="SystemAccentColorDark3">#0D353D</Color>
+</ResourceDictionary>

@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>MdChildSupport.App</RootNamespace>
+    <AssemblyName>MdChildSupport</AssemblyName>
+    <AssemblyTitle>Maryland Child Support Calculator</AssemblyTitle>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>$(BrandDir)AppIcon.ico</ApplicationIcon>
+    <Platforms>x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <!-- Unpackaged and fully self-contained: the publish folder runs on a clean Windows 10 1809+ / 11 machine. -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <SelfContained>true</SelfContained>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Platform Condition="'$(Platform)' == '' or '$(Platform)' == 'AnyCPU'">x64</Platform>
+    <RuntimeIdentifier Condition="'$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <!-- Brand files come from $(BrandDir), chosen in Directory.Build.props (branding/README.md). -->
+  <ItemGroup>
+    <Page Include="$(BrandDir)BrandResources.xaml" Link="Branding\BrandResources.xaml" />
+    <Content Include="$(BrandDir)BrandLogo.png" Link="Branding\BrandLogo.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(BrandDir)AppIcon.ico" Link="Branding\AppIcon.ico" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="$(BrandDir)MdChildSupport.settings.json" Link="MdChildSupport.settings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="ReportBrand" BeforeTargets="BeforeBuild">
+    <Message Importance="high" Condition="'$(UsingPlaceholderBrand)' == 'true'"
+             Text="MdChildSupport.App: building with PLACEHOLDER branding (branding/default). Supply branding/local or -p:BrandDir for an official build." />
+    <Message Importance="high" Condition="'$(UsingPlaceholderBrand)' != 'true'" Text="MdChildSupport.App: branding from $(BrandDir)" />
+  </Target>
+
+  <ItemGroup>
+    <!-- WinUI and its runtime only. The Microsoft.WindowsAppSDK meta-package would also ship AI/ML/Search components
+         (ONNX Runtime, DirectML) that this app does not use. -->
+    <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="2.6.5" />
+    <PackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="2.6.5" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MdChildSupport.Core\MdChildSupport.Core.csproj" />
+  </ItemGroup>
+
+</Project>

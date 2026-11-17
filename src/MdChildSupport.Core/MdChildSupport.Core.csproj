@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MdChildSupport.Core</RootNamespace>
+    <AssemblyName>MdChildSupport.Core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Schedule\schedule.txt" LogicalName="MdChildSupport.Core.Schedule.schedule.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- PDFsharp 6.5+ is AGPL-3.0-only; this project is AGPL-3.0-or-later (docs/licensing.md). -->
+    <PackageReference Include="PDFsharp" Version="6.5.0" />
+    <!-- PDFsharp 6.5.0 depends on Pkcs 8.0.1, which has known advisories; lift it to a patched release. -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="10.0.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="MdChildSupport.Core.Tests" />
+  </ItemGroup>
+
+</Project>

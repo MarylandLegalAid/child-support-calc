@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="MdChildSupport.App.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MdChildSupport.App"
+    Title="Maryland Child Support Calculator">
+
+    <Grid Background="{ThemeResource PageBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Branded title bar (drag region; caption buttons are drawn by the system on top, right) -->
+        <Grid x:Name="AppTitleBar" Height="48" Background="{ThemeResource BrandHeaderBackgroundBrush}">
+            <StackPanel Orientation="Horizontal" Spacing="16" Margin="16,0,0,0" VerticalAlignment="Center">
+                <Image Source="ms-appx:///Branding/BrandLogo.png" Height="28" Stretch="Uniform"
+                       AutomationProperties.Name="{StaticResource BrandLogoName}" />
+                <Rectangle Width="1" Height="24" Fill="{ThemeResource BrandDividerBrush}" />
+                <TextBlock VerticalAlignment="Center" FontSize="15" FontWeight="SemiBold" Foreground="{ThemeResource OnBrandBrush}"
+                           Text="Child Support Calculator" />
+                <TextBlock x:Name="FileNameText" VerticalAlignment="Center" FontSize="13" Foreground="{ThemeResource OnBrandSubtleBrush}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Command bar on a white strip -->
+        <Border Grid.Row="1" Background="{ThemeResource SectionBackgroundBrush}" BorderBrush="{ThemeResource SectionStrokeBrush}"
+                BorderThickness="0,0,0,1" Padding="4,0">
+            <CommandBar DefaultLabelPosition="Right" HorizontalAlignment="Left" Background="Transparent">
+                <AppBarButton Label="New" Click="New_Click">
+                    <AppBarButton.Icon><SymbolIcon Symbol="Page2" Foreground="{ThemeResource BrandBrush}" /></AppBarButton.Icon>
+                    <AppBarButton.KeyboardAccelerators><KeyboardAccelerator Modifiers="Control" Key="N" /></AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+                <AppBarButton Label="Open" Click="Open_Click">
+                    <AppBarButton.Icon><SymbolIcon Symbol="OpenFile" Foreground="{ThemeResource BrandBrush}" /></AppBarButton.Icon>
+                    <AppBarButton.KeyboardAccelerators><KeyboardAccelerator Modifiers="Control" Key="O" /></AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+                <AppBarButton Label="Save" Click="Save_Click">
+                    <AppBarButton.Icon><SymbolIcon Symbol="Save" Foreground="{ThemeResource BrandBrush}" /></AppBarButton.Icon>
+                    <AppBarButton.KeyboardAccelerators><KeyboardAccelerator Modifiers="Control" Key="S" /></AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+                <AppBarButton Label="Save As" Click="SaveAs_Click">
+                    <AppBarButton.Icon><SymbolIcon Symbol="SaveLocal" Foreground="{ThemeResource BrandBrush}" /></AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarSeparator />
+                <AppBarButton Label="Export Worksheet PDF" Click="ExportPdf_Click">
+                    <AppBarButton.Icon><SymbolIcon Symbol="Document" Foreground="{ThemeResource BrandBrush}" /></AppBarButton.Icon>
+                    <AppBarButton.KeyboardAccelerators><KeyboardAccelerator Modifiers="Control" Key="P" /></AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+                <AppBarButton Label="Comments" Click="Comments_Click">
+                    <AppBarButton.Icon><SymbolIcon Symbol="Comment" Foreground="{ThemeResource BrandBrush}" /></AppBarButton.Icon>
+                </AppBarButton>
+            </CommandBar>
+        </Border>
+
+        <ScrollViewer Grid.Row="2" Padding="24">
+            <Grid ColumnSpacing="24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="580" />
+                    <ColumnDefinition Width="320" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Spacing="16">
+
+                    <!-- Case caption -->
+                    <Border Style="{StaticResource SectionCard}">
+                        <StackPanel Spacing="14">
+                            <TextBlock Style="{StaticResource SectionHeading}" Text="Case" />
+                            <Grid ColumnSpacing="20" RowSpacing="14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBox Header="Case number" Text="{x:Bind ViewModel.CaseNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <ComboBox Grid.Column="1" Header="County" HorizontalAlignment="Stretch"
+                                          ItemsSource="{x:Bind ViewModel.CountyNames}" SelectedIndex="{x:Bind ViewModel.CountyIndex, Mode=TwoWay}" />
+                                <TextBox Grid.Row="1" Header="Plaintiff" Text="{x:Bind ViewModel.Plaintiff, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBox Grid.Row="1" Grid.Column="1" Header="Defendant" Text="{x:Bind ViewModel.Defendant, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <RadioButtons Grid.Row="2" Header="Court" MaxColumns="2" SelectedIndex="{x:Bind ViewModel.CourtIndex, Mode=TwoWay}">
+                                    <x:String>Circuit Court</x:String>
+                                    <x:String>District Court</x:String>
+                                </RadioButtons>
+                                <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom"
+                                          Content="Label parents &quot;Parent 1&quot; and &quot;Parent 2&quot;"
+                                          IsChecked="{x:Bind ViewModel.UseParentLabels, Mode=TwoWay}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Guidelines and custody -->
+                    <Border Style="{StaticResource SectionCard}">
+                        <Grid ColumnSpacing="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <RadioButtons SelectedIndex="{x:Bind ViewModel.GuidelinesIndex, Mode=TwoWay}">
+                                <RadioButtons.Header><TextBlock Style="{StaticResource SectionHeading}" Text="Guidelines" /></RadioButtons.Header>
+                                <x:String>October 2025 (multifamily adjustment)</x:String>
+                                <x:String>July 2022</x:String>
+                            </RadioButtons>
+                            <RadioButtons Grid.Column="1" SelectedIndex="{x:Bind ViewModel.CustodyIndex, Mode=TwoWay}">
+                                <RadioButtons.Header><TextBlock Style="{StaticResource SectionHeading}" Text="Physical custody" /></RadioButtons.Header>
+                                <x:String>Shared (Worksheet B)</x:String>
+                                <x:String>Sole – with Mother / Parent 1 (Worksheet A)</x:String>
+                                <x:String>Sole – with Father / Parent 2 (Worksheet A)</x:String>
+                            </RadioButtons>
+                        </Grid>
+                    </Border>
+
+                    <!-- Children -->
+                    <Border Style="{StaticResource SectionCard}">
+                        <StackPanel Spacing="6">
+                            <TextBlock Style="{StaticResource SectionHeading}" Text="Children in this case" />
+                            <TextBlock Style="{StaticResource SecondaryText}" Margin="0,0,0,6"
+                                       Text="The schedule uses the number of children with a name entered (up to 6)." />
+                            <Grid ColumnSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="24" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="1" Style="{StaticResource SecondaryText}" FontSize="12" Text="Name" />
+                                <TextBlock Grid.Column="2" Style="{StaticResource SecondaryText}" FontSize="12" Text="Date of birth" />
+                            </Grid>
+                            <ItemsControl ItemsSource="{x:Bind ViewModel.Children}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="local:ChildViewModel">
+                                        <Grid ColumnSpacing="10" Margin="0,3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="24" />
+                                                <ColumnDefinition Width="2*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="{ThemeResource SecondaryTextBrush}"
+                                                       Text="{x:Bind Number}" />
+                                            <TextBox Grid.Column="1" AutomationProperties.Name="Child name"
+                                                     Text="{x:Bind Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            <TextBox Grid.Column="2" AutomationProperties.Name="Child date of birth" PlaceholderText="MM/DD/YYYY"
+                                                     Text="{x:Bind BirthDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Financial inputs -->
+                    <Border Style="{StaticResource SectionCard}">
+                        <StackPanel Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Style="{StaticResource SectionHeading}" Text="Income and expenses" />
+                                <TextBlock Style="{StaticResource SecondaryText}" VerticalAlignment="Bottom" Margin="0,0,0,1" Text="· monthly" />
+                            </StackPanel>
+                            <Grid x:Name="Inputs" ColumnSpacing="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.3*" />
+                                    <ColumnDefinition Width="*" MinWidth="165" />
+                                    <ColumnDefinition Width="*" MinWidth="165" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <!-- Row dividers (drawn first, behind the cells) -->
+                                <Border Grid.Row="0" Grid.ColumnSpan="3" BorderBrush="{ThemeResource SectionStrokeBrush}" BorderThickness="0,0,0,1" />
+                                <Border Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" />
+                                <Border Grid.Row="2" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" Visibility="{x:Bind ViewModel.IsMultiFamily, Mode=OneWay}" />
+                                <Border Grid.Row="3" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" />
+                                <Border Grid.Row="4" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" />
+                                <Border Grid.Row="5" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" />
+                                <Border Grid.Row="6" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" Visibility="{x:Bind ViewModel.IsShared, Mode=OneWay}" />
+                                <Border Grid.Row="7" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" />
+                                <Border Grid.Row="8" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" />
+                                <Border Grid.Row="9" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" />
+                                <Border Grid.Row="10" Grid.ColumnSpan="3" Style="{StaticResource RowDivider}" />
+
+                                <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource ColumnHeader}" Margin="0,0,0,8" Text="{x:Bind ViewModel.MotherHeader, Mode=OneWay}" />
+                                <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource ColumnHeader}" Margin="0,0,0,8" Text="{x:Bind ViewModel.FatherHeader, Mode=OneWay}" />
+
+                                <StackPanel Grid.Row="1" Style="{StaticResource RowLabelPanel}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Actual income (before taxes)" />
+                                </StackPanel>
+                                <NumberBox Grid.Row="1" Grid.Column="1" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Mother.Income, Mode=TwoWay}"
+                                           AutomationProperties.Name="Mother actual income" />
+                                <NumberBox Grid.Row="1" Grid.Column="2" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Father.Income, Mode=TwoWay}"
+                                           AutomationProperties.Name="Father actual income" />
+
+                                <StackPanel Grid.Row="2" Style="{StaticResource RowLabelPanel}" Visibility="{x:Bind ViewModel.IsMultiFamily, Mode=OneWay}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Multifamily adjustment" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="4" Visibility="{x:Bind ViewModel.IsMultiFamily, Mode=OneWay}">
+                                    <NumberBox Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Mother.MultiFamily, Mode=TwoWay}"
+                                               AutomationProperties.Name="Mother multifamily adjustment" />
+                                    <Button Style="{StaticResource OutlineBrandButton}" Tag="Mother" Click="MultiFamily_Click" Padding="8,6"
+                                            AutomationProperties.Name="Calculate mother multifamily adjustment"
+                                            ToolTipService.ToolTip="Calculate… the FL §12-201(c) allowance for additional children in this parent's home">
+                                        <FontIcon Glyph="&#xE8EF;" FontSize="16" />
+                                    </Button>
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" Spacing="4" Visibility="{x:Bind ViewModel.IsMultiFamily, Mode=OneWay}">
+                                    <NumberBox Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Father.MultiFamily, Mode=TwoWay}"
+                                               AutomationProperties.Name="Father multifamily adjustment" />
+                                    <Button Style="{StaticResource OutlineBrandButton}" Tag="Father" Click="MultiFamily_Click" Padding="8,6"
+                                            AutomationProperties.Name="Calculate father multifamily adjustment"
+                                            ToolTipService.ToolTip="Calculate… the FL §12-201(c) allowance for additional children in this parent's home">
+                                        <FontIcon Glyph="&#xE8EF;" FontSize="16" />
+                                    </Button>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="3" Style="{StaticResource RowLabelPanel}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Pre-existing child support actually paid" />
+                                </StackPanel>
+                                <NumberBox Grid.Row="3" Grid.Column="1" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Mother.ExistingSupport, Mode=TwoWay}"
+                                           AutomationProperties.Name="Mother pre-existing child support" />
+                                <NumberBox Grid.Row="3" Grid.Column="2" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Father.ExistingSupport, Mode=TwoWay}"
+                                           AutomationProperties.Name="Father pre-existing child support" />
+
+                                <StackPanel Grid.Row="4" Style="{StaticResource RowLabelPanel}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Alimony actually paid (other cases)" />
+                                </StackPanel>
+                                <NumberBox Grid.Row="4" Grid.Column="1" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Mother.AlimonyPaid, Mode=TwoWay}"
+                                           AutomationProperties.Name="Mother alimony paid" />
+                                <NumberBox Grid.Row="4" Grid.Column="2" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Father.AlimonyPaid, Mode=TwoWay}"
+                                           AutomationProperties.Name="Father alimony paid" />
+
+                                <StackPanel Grid.Row="5" Style="{StaticResource RowLabelPanel}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Alimony awarded in this case" />
+                                    <TextBlock Style="{StaticResource SecondaryText}" FontSize="12" Text="+ received by first parent, − paid" />
+                                </StackPanel>
+                                <NumberBox Grid.Row="5" Grid.Column="1" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Value="{x:Bind ViewModel.AlimonyToMother, Mode=TwoWay}"
+                                           AutomationProperties.Name="Alimony awarded to first parent" />
+                                <TextBlock Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" TextWrapping="Wrap" Foreground="{ThemeResource SecondaryTextBrush}"
+                                           Text="{x:Bind ViewModel.AlimonyOppositeText, Mode=OneWay}" />
+
+                                <StackPanel Grid.Row="6" Style="{StaticResource RowLabelPanel}" Visibility="{x:Bind ViewModel.IsShared, Mode=OneWay}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Overnights per year" />
+                                </StackPanel>
+                                <NumberBox Grid.Row="6" Grid.Column="1" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="WholeNumberFormatter"
+                                           Minimum="92" Maximum="273" SpinButtonPlacementMode="Compact"
+                                           Value="{x:Bind ViewModel.MotherOvernights, Mode=TwoWay}" Visibility="{x:Bind ViewModel.IsShared, Mode=OneWay}"
+                                           AutomationProperties.Name="Mother overnights per year" />
+                                <TextBlock Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" Foreground="{ThemeResource SecondaryTextBrush}"
+                                           Text="{x:Bind ViewModel.FatherOvernightsText, Mode=OneWay}" Visibility="{x:Bind ViewModel.IsShared, Mode=OneWay}" />
+
+                                <StackPanel Grid.Row="7" Style="{StaticResource RowLabelPanel}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Work-related child care" />
+                                </StackPanel>
+                                <NumberBox Grid.Row="7" Grid.Column="1" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Mother.ChildCare, Mode=TwoWay}"
+                                           AutomationProperties.Name="Mother child care" />
+                                <NumberBox Grid.Row="7" Grid.Column="2" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Father.ChildCare, Mode=TwoWay}"
+                                           AutomationProperties.Name="Father child care" />
+
+                                <StackPanel Grid.Row="8" Style="{StaticResource RowLabelPanel}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Health insurance for the children" />
+                                </StackPanel>
+                                <NumberBox Grid.Row="8" Grid.Column="1" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Mother.HealthInsurance, Mode=TwoWay}"
+                                           AutomationProperties.Name="Mother health insurance" />
+                                <NumberBox Grid.Row="8" Grid.Column="2" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Father.HealthInsurance, Mode=TwoWay}"
+                                           AutomationProperties.Name="Father health insurance" />
+
+                                <StackPanel Grid.Row="9" Style="{StaticResource RowLabelPanel}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Extraordinary medical expenses" />
+                                </StackPanel>
+                                <NumberBox Grid.Row="9" Grid.Column="1" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Mother.ExtraordinaryMedical, Mode=TwoWay}"
+                                           AutomationProperties.Name="Mother extraordinary medical expenses" />
+                                <NumberBox Grid.Row="9" Grid.Column="2" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Father.ExtraordinaryMedical, Mode=TwoWay}"
+                                           AutomationProperties.Name="Father extraordinary medical expenses" />
+
+                                <StackPanel Grid.Row="10" Style="{StaticResource RowLabelPanel}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Cash medical support" />
+                                    <TextBlock Style="{StaticResource SecondaryText}" FontSize="12" Text="% of income" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="10" Grid.Column="1" Orientation="Horizontal" Spacing="2">
+                                    <NumberBox Style="{StaticResource Money}" local:NumberBoxAlignment.Format="PercentFormatter" Minimum="0" Maximum="100" SmallChange="0.1"
+                                               Value="{x:Bind ViewModel.Mother.CashMedicalPercent, Mode=TwoWay}" AutomationProperties.Name="Mother cash medical support percent" />
+                                    <TextBlock VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{x:Bind ViewModel.MotherCashMedicalDollars, Mode=OneWay}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="10" Grid.Column="2" Orientation="Horizontal" Spacing="2">
+                                    <NumberBox Style="{StaticResource Money}" local:NumberBoxAlignment.Format="PercentFormatter" Minimum="0" Maximum="100" SmallChange="0.1"
+                                               Value="{x:Bind ViewModel.Father.CashMedicalPercent, Mode=TwoWay}" AutomationProperties.Name="Father cash medical support percent" />
+                                    <TextBlock VerticalAlignment="Center" Style="{StaticResource SecondaryText}" Text="{x:Bind ViewModel.FatherCashMedicalDollars, Mode=OneWay}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="11" Style="{StaticResource RowLabelPanel}">
+                                    <TextBlock Style="{StaticResource RowLabel}" Text="Additional expenses" />
+                                    <TextBlock Style="{StaticResource SecondaryText}" FontSize="12" Text="School, transportation" />
+                                </StackPanel>
+                                <NumberBox Grid.Row="11" Grid.Column="1" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Mother.AdditionalExpenses, Mode=TwoWay}"
+                                           AutomationProperties.Name="Mother additional expenses" />
+                                <NumberBox Grid.Row="11" Grid.Column="2" Style="{StaticResource Money}" local:NumberBoxAlignment.Format="DollarFormatter" Minimum="0" Value="{x:Bind ViewModel.Father.AdditionalExpenses, Mode=TwoWay}"
+                                           AutomationProperties.Name="Father additional expenses" />
+
+                                <TextBlock Grid.Row="12" Grid.ColumnSpan="3" Margin="0,8,0,0" TextWrapping="Wrap"
+                                           Visibility="{x:Bind ViewModel.HasOvernightsNote, Mode=OneWay}"
+                                           Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                           Text="{x:Bind ViewModel.OvernightsNote, Mode=OneWay}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SectionCard}">
+                        <Grid ColumnSpacing="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Header="Prepared by" Text="{x:Bind ViewModel.Preparer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBox Grid.Column="1" Header="Date" Text="{x:Bind ViewModel.Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <!-- Results -->
+                <StackPanel Grid.Column="1" Spacing="16">
+                    <Border Style="{StaticResource SectionCard}" Padding="0">
+                        <StackPanel>
+                            <Border Background="{ThemeResource BrandHeaderBackgroundBrush}" CornerRadius="7,7,0,0" Padding="20,18,20,20">
+                                <StackPanel Spacing="2">
+                                    <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{ThemeResource OnBrandSubtleBrush}" Text="Recommended support" />
+                                    <TextBlock FontSize="15" TextWrapping="Wrap" Foreground="{ThemeResource OnBrandBrush}"
+                                               Text="{x:Bind ViewModel.RecommendedPayerText, Mode=OneWay}" />
+                                    <StackPanel Orientation="Horizontal" Spacing="6" Visibility="{x:Bind ViewModel.HasRecommendedAmount, Mode=OneWay}">
+                                        <TextBlock FontSize="40" FontWeight="SemiBold" Foreground="{ThemeResource OnBrandBrush}"
+                                                   Text="{x:Bind ViewModel.RecommendedAmountText, Mode=OneWay}" />
+                                        <TextBlock FontSize="15" VerticalAlignment="Bottom" Margin="0,0,0,9" Foreground="{ThemeResource OnBrandSubtleBrush}"
+                                                   Text="per month" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            <Grid ColumnSpacing="16" RowSpacing="8" Padding="20,16,20,18">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Column="1" Style="{StaticResource SecondaryText}" FontSize="12" HorizontalAlignment="Right" Text="{x:Bind ViewModel.MotherHeader, Mode=OneWay}" />
+                                <TextBlock Grid.Column="2" Style="{StaticResource SecondaryText}" FontSize="12" HorizontalAlignment="Right" Text="{x:Bind ViewModel.FatherHeader, Mode=OneWay}" />
+                                <TextBlock Grid.Row="1" Text="Adjusted actual income" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource ResultValue}" Text="{x:Bind ViewModel.MotherAdjusted, Mode=OneWay}" />
+                                <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource ResultValue}" Text="{x:Bind ViewModel.FatherAdjusted, Mode=OneWay}" />
+                                <TextBlock Grid.Row="2" Text="Share of income" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource ResultValue}" Text="{x:Bind ViewModel.MotherShare, Mode=OneWay}" />
+                                <TextBlock Grid.Row="2" Grid.Column="2" Style="{StaticResource ResultValue}" Text="{x:Bind ViewModel.FatherShare, Mode=OneWay}" />
+                                <TextBlock Grid.Row="3" Text="Monthly support owed" FontWeight="SemiBold" TextWrapping="Wrap" />
+                                <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource ResultValue}" FontWeight="SemiBold" Text="{x:Bind ViewModel.MotherRecommended, Mode=OneWay}" />
+                                <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource ResultValue}" FontWeight="SemiBold" Text="{x:Bind ViewModel.FatherRecommended, Mode=OneWay}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SectionCard}" Padding="20,16">
+                        <Grid ColumnSpacing="16" RowSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Combined actual income" />
+                            <TextBlock Grid.Column="1" Style="{StaticResource ResultValue}" Text="{x:Bind ViewModel.CombinedIncome, Mode=OneWay}" />
+                            <TextBlock Grid.Row="1" Text="Combined adjusted income" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource ResultValue}" Text="{x:Bind ViewModel.CombinedAdjusted, Mode=OneWay}" />
+                            <TextBlock Grid.Row="2" Text="Children counted" />
+                            <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource ResultValue}" Text="{x:Bind ViewModel.ChildCountText, Mode=OneWay}" />
+                            <TextBlock Grid.Row="3" Text="Basic obligation (schedule)" />
+                            <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource ResultValue}" Text="{x:Bind ViewModel.BasicObligation, Mode=OneWay}" />
+                        </Grid>
+                    </Border>
+
+                    <InfoBar IsOpen="{x:Bind ViewModel.HasWarnings, Mode=OneWay}" IsClosable="False" Severity="Warning"
+                             Title="Review" Message="{x:Bind ViewModel.Warnings, Mode=OneWay}" />
+
+                    <!-- Primary call to action: MLA Alert yellow (style guide reserves it for buttons/CTAs) -->
+                    <Button HorizontalAlignment="Stretch" MinHeight="44" FontWeight="SemiBold" Click="ExportPdf_Click">
+                        <Button.Resources>
+                            <StaticResource x:Key="ButtonBackground" ResourceKey="AlertBackgroundBrush" />
+                            <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="AlertBackgroundPointerOverBrush" />
+                            <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="AlertBackgroundPressedBrush" />
+                            <StaticResource x:Key="ButtonForeground" ResourceKey="AlertForegroundBrush" />
+                            <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="AlertForegroundBrush" />
+                            <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="AlertForegroundBrush" />
+                            <StaticResource x:Key="ButtonBorderBrush" ResourceKey="AlertBackgroundBrush" />
+                            <StaticResource x:Key="ButtonBorderBrushPointerOver" ResourceKey="AlertBackgroundPointerOverBrush" />
+                            <StaticResource x:Key="ButtonBorderBrushPressed" ResourceKey="AlertBackgroundPressedBrush" />
+                        </Button.Resources>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <SymbolIcon Symbol="Document" />
+                            <TextBlock Text="Export worksheet PDF" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

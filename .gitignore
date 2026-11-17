@@ -1,0 +1,14 @@
+# Build output
+bin/
+obj/
+/artifacts/
+/publish/
+TestResults/
+*.binlog
+
+# IDE state
+.vs/
+*.user
+
+# The official build's private brand files (branding/README.md)
+/branding/local/

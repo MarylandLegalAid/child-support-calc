@@ -1,0 +1,6 @@
+<Project>
+  <!-- Placeholder brand. Company appears in the executable's file properties and the installer's publisher. -->
+  <PropertyGroup>
+    <BrandCompany>Your Organization</BrandCompany>
+  </PropertyGroup>
+</Project>

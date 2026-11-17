@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  App brushes and styles. Colours come from the brand folder's BrandResources.xaml (branding/README.md), merged
+  before this file in App.xaml. The app runs in the light theme only (App.xaml); the HighContrast dictionary maps
+  every brand brush to a system colour so Windows contrast themes still win.
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MdChildSupport.App">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <SolidColorBrush x:Key="PageBackgroundBrush" Color="#F4F6F8" />
+            <SolidColorBrush x:Key="SectionBackgroundBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="SectionStrokeBrush" Color="#E1E6EC" />
+            <SolidColorBrush x:Key="RowDividerBrush" Color="#EEF1F4" />
+            <SolidColorBrush x:Key="BrandBrush" Color="{ThemeResource BrandPrimaryColor}" />
+            <SolidColorBrush x:Key="BrandHeaderBackgroundBrush" Color="{ThemeResource BrandPrimaryColor}" />
+            <SolidColorBrush x:Key="OnBrandBrush" Color="{ThemeResource BrandOnPrimaryColor}" />
+            <SolidColorBrush x:Key="OnBrandSubtleBrush" Color="{ThemeResource BrandOnPrimarySubtleColor}" />
+            <SolidColorBrush x:Key="BrandDividerBrush" Color="{ThemeResource BrandDividerColor}" />
+            <SolidColorBrush x:Key="SecondaryTextBrush" Color="{ThemeResource BrandSecondaryTextColor}" />
+            <SolidColorBrush x:Key="AlertBackgroundBrush" Color="{ThemeResource BrandCtaColor}" />
+            <SolidColorBrush x:Key="AlertBackgroundPointerOverBrush" Color="{ThemeResource BrandCtaHoverColor}" />
+            <SolidColorBrush x:Key="AlertBackgroundPressedBrush" Color="{ThemeResource BrandCtaPressedColor}" />
+            <SolidColorBrush x:Key="AlertForegroundBrush" Color="{ThemeResource BrandCtaForegroundColor}" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="PageBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="SectionBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="SectionStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="RowDividerBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
+            <SolidColorBrush x:Key="BrandBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="BrandHeaderBackgroundBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="OnBrandBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="OnBrandSubtleBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="BrandDividerBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="SecondaryTextBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
+            <SolidColorBrush x:Key="AlertBackgroundBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
+            <SolidColorBrush x:Key="AlertBackgroundPointerOverBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="AlertBackgroundPressedBrush" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="AlertForegroundBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <!-- Number display: "$1,111", "273", "5.0%". Parsing accepts plain digits too. -->
+    <local:AffixNumberFormatter x:Key="DollarFormatter" Prefix="$" />
+    <local:AffixNumberFormatter x:Key="WholeNumberFormatter" />
+    <local:AffixNumberFormatter x:Key="PercentFormatter" Suffix="%" FractionDigits="1" />
+
+    <!-- Layout and text styles -->
+    <Style x:Key="SectionCard" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource SectionBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource SectionStrokeBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="24,20" />
+    </Style>
+
+    <Style x:Key="SectionHeading" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{ThemeResource BrandBrush}" />
+    </Style>
+
+    <Style x:Key="SecondaryText" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{ThemeResource SecondaryTextBrush}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="ColumnHeader" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style x:Key="RowLabel" TargetType="TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="RowLabelPanel" TargetType="StackPanel">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Spacing" Value="2" />
+        <Setter Property="Margin" Value="0,10,12,10" />
+    </Style>
+
+    <Style x:Key="RowDivider" TargetType="Border">
+        <Setter Property="BorderBrush" Value="{ThemeResource RowDividerBrush}" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </Style>
+
+    <Style x:Key="Money" TargetType="NumberBox">
+        <Setter Property="Margin" Value="0,6" />
+        <Setter Property="SpinButtonPlacementMode" Value="Hidden" />
+        <Setter Property="Width" Value="120" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="local:NumberBoxAlignment.AlignRight" Value="True" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="ResultValue" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,2,0,2" />
+    </Style>
+
+    <Style x:Key="OutlineBrandButton" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+        <Setter Property="Foreground" Value="{ThemeResource BrandBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource BrandBrush}" />
+        <Setter Property="Background" Value="{ThemeResource SectionBackgroundBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+</ResourceDictionary>

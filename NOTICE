@@ -1,0 +1,25 @@
+Maryland Child Support Calculator
+Copyright Maryland Legal Aid
+
+Licensed under the GNU Affero General Public License, version 3 or (at your option) any later version.
+See LICENSE and docs/licensing.md.
+
+This product includes or depends on the following third-party components:
+
+- PDFsharp 6.5.0 — Copyright (c) empira Software GmbH. Licensed under the GNU Affero General Public License v3.0
+  (AGPL-3.0-only); selected in code with PdfSharpLicense.SetAgplLicense().
+  https://github.com/empira/PDFsharp
+- System.Security.Cryptography.Pkcs — Copyright (c) .NET Foundation and Contributors. Licensed under the MIT License.
+- Windows App SDK — Copyright (c) Microsoft Corporation. Redistributed under the Microsoft Software License Terms
+  included in the Microsoft.WindowsAppSDK NuGet package (license.txt).
+
+Used for testing only (not distributed with the app):
+
+- xUnit.net v3 — Copyright (c) .NET Foundation and Contributors. Licensed under the Apache License 2.0.
+- PdfPig — Copyright (c) UglyToad and contributors. Licensed under the Apache License 2.0.
+- Microsoft.NET.Test.Sdk — Copyright (c) Microsoft Corporation. Licensed under the MIT License.
+
+Public law: the schedule of basic child support obligations is from Md. Code, Family Law § 12-204(e).
+
+"Maryland Legal Aid" is a trademark of Maryland Legal Aid and is not licensed under the project's code licence.
+The repository contains only placeholder branding; see TRADEMARKS.md and branding/README.md.
